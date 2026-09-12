@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 
 type Faq = {
   question: string;
@@ -13,6 +13,7 @@ type FaqAccordionProps = {
 
 export function FaqAccordion({ items }: FaqAccordionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const baseId = useId();
 
   return (
     <>
@@ -22,15 +23,23 @@ export function FaqAccordion({ items }: FaqAccordionProps) {
         return (
           <div className="faq-item" key={item.question}>
             <button
+              id={`${baseId}-question-${index}`}
               className={`faq-question${isOpen ? " active" : ""}`}
               type="button"
               aria-expanded={isOpen}
+              aria-controls={`${baseId}-answer-${index}`}
               onClick={() => setOpenIndex(isOpen ? null : index)}
             >
               {item.question}
-              <i className={`fas ${isOpen ? "fa-minus" : "fa-plus"}`} />
+              <i className={`fas ${isOpen ? "fa-minus" : "fa-plus"}`} aria-hidden="true" />
             </button>
-            <div className="faq-answer" style={{ display: isOpen ? "block" : "none" }}>
+            <div
+              id={`${baseId}-answer-${index}`}
+              className="faq-answer"
+              role="region"
+              aria-labelledby={`${baseId}-question-${index}`}
+              hidden={!isOpen}
+            >
               {item.answer}
             </div>
           </div>

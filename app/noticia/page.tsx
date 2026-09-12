@@ -56,7 +56,7 @@ export default async function NoticiaPage() {
             <div className="card-horizontal">
               <NewsImage news={article} />
               <div className="conteudo">
-                <h4>{article.title}</h4>
+                <h2>{article.title}</h2>
                 <p>{article.summary}</p>
               </div>
             </div>

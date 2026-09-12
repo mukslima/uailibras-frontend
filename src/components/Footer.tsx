@@ -7,11 +7,11 @@ export function Footer() {
     <footer>
       <div className="footer-container">
         <div className="footer-column">
-          <h4>UaiLibras</h4>
+          <h2 className="footer-heading">UaiLibras</h2>
           <p>Comunicar, Aprender & Incluir</p>
         </div>
         <div className="footer-column">
-          <h4>Cursos</h4>
+          <h2 className="footer-heading">Cursos</h2>
           <ul>
             {footerCourses.map((course) => (
               <li key={course}>
@@ -21,7 +21,7 @@ export function Footer() {
           </ul>
         </div>
         <div className="footer-column">
-          <h4>Links úteis</h4>
+          <h2 className="footer-heading">Links úteis</h2>
           <ul>
             <li>
               <Link href="/noticia">Notícias</Link>
@@ -32,7 +32,7 @@ export function Footer() {
           </ul>
         </div>
         <div className="footer-column">
-          <h4>Redes Sociais</h4>
+          <h2 className="footer-heading">Redes Sociais</h2>
           <p className="footer-muted">Em breve.</p>
         </div>
       </div>

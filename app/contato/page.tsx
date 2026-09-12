@@ -21,19 +21,19 @@ export default function ContatoPage() {
 
             <ul className="contato-lista">
               <li>
-                <i className="fas fa-phone-alt" /> Número: 31 91479896
+                <i className="fas fa-phone-alt" aria-hidden="true" /> Número: 31 91479896
               </li>
               <li>
-                <i className="fas fa-envelope" /> Email: contato@uailibras.com.br
+                <i className="fas fa-envelope" aria-hidden="true" /> Email: contato@uailibras.com.br
               </li>
               <li>
-                <i className="fab fa-instagram" /> Instagram:{" "}
-                <a href="https://www.instagram.com/uai.libras/" style={{ color: "white" }}>
+                <i className="fab fa-instagram" aria-hidden="true" /> Instagram:{" "}
+                <a href="https://www.instagram.com/uai.libras/" className="contato-link">
                   @uai.libras
                 </a>
               </li>
               <li>
-                <i className="fas fa-map-marker-alt" /> Localização
+                <i className="fas fa-map-marker-alt" aria-hidden="true" /> Localização
                 <br />
                 Rua Silva Ortiz, 164, Bairro Floresta - Belo Horizonte
               </li>

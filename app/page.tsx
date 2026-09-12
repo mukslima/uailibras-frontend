@@ -86,7 +86,7 @@ export default async function Home() {
                 <div className="conteudo">
                   <h3>{item.title}</h3>
                   <p>{item.summary}</p>
-                  <Link href={getNewsUrl(item)} className="btn-leia-mais">
+                  <Link href={getNewsUrl(item)} className="btn-leia-mais" aria-label={`Leia mais sobre ${item.title}`}>
                     Leia mais
                   </Link>
                 </div>

@@ -9,7 +9,7 @@ type NewsImageProps = {
 export function NewsImage({ news, className }: NewsImageProps) {
   if (!news.coverImage?.url) {
     return (
-      <div className={`noticia-img-placeholder${className ? ` ${className}` : ""}`} aria-label="Noticia sem imagem">
+      <div className={`noticia-img-placeholder${className ? ` ${className}` : ""}`} role="img" aria-label="Notícia sem imagem">
         <span>UaiLibras</span>
       </div>
     );
