@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { NewsArticle } from "@/components/NewsArticle";
-import { fetchPublicNewsBySlug, fetchPublicTranslationLink, getNewsImageAlt, getNewsUrl } from "@/lib/news";
+import { getDictionary } from "@/i18n/dictionaries";
+import { fetchPublicNewsBySlug, getNewsImageAlt, getNewsUrl } from "@/lib/news";
 
 type NewsDetailPageProps = {
   params: Promise<{
@@ -9,27 +10,29 @@ type NewsDetailPageProps = {
   }>;
 };
 
+const dictionary = getDictionary("en");
+
 export async function generateMetadata({ params }: NewsDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const article = await fetchPublicNewsBySlug(slug).catch(() => null);
+  const article = await fetchPublicNewsBySlug(slug, "en").catch(() => null);
 
   if (!article) {
     return {
-      title: "Noticia nao encontrada | UaiLibras",
+      title: dictionary.news.notFound,
     };
   }
 
-  const enLink = await fetchPublicTranslationLink(article.slug, "en").catch(() => null);
+  const ptUrl = article.sourceSlug ? `/noticia/${article.sourceSlug}` : undefined;
 
   return {
     title: `${article.title} | UaiLibras`,
     description: article.summary,
     alternates: {
-      canonical: getNewsUrl(article),
+      canonical: getNewsUrl(article, "en"),
       languages: {
-        "pt-BR": getNewsUrl(article),
-        ...(enLink ? { en: `/en/news/${enLink.slug}` } : {}),
-        "x-default": getNewsUrl(article),
+        ...(ptUrl ? { "pt-BR": ptUrl } : {}),
+        en: getNewsUrl(article, "en"),
+        ...(ptUrl ? { "x-default": ptUrl } : {}),
       },
     },
     openGraph: {
@@ -37,7 +40,7 @@ export async function generateMetadata({ params }: NewsDetailPageProps): Promise
       description: article.summary,
       type: "article",
       publishedTime: article.publishedAt ?? undefined,
-      url: getNewsUrl(article),
+      url: getNewsUrl(article, "en"),
       images: article.coverImage?.url
         ? [
             {
@@ -50,11 +53,11 @@ export async function generateMetadata({ params }: NewsDetailPageProps): Promise
   };
 }
 
-export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
+export default async function EnglishNewsDetailPage({ params }: NewsDetailPageProps) {
   const { slug } = await params;
-  const article = await fetchPublicNewsBySlug(slug).catch((error) => {
+  const article = await fetchPublicNewsBySlug(slug, "en").catch((error) => {
     if (error instanceof Error) return error;
-    return new Error("Nao foi possivel carregar a noticia.");
+    return new Error(dictionary.news.error);
   });
 
   if (!article) {
@@ -65,12 +68,12 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
     return (
       <main>
         <article className="noticia-detalhe">
-          <h1 className="noticia-titulo">Notícia indisponível</h1>
+          <h1 className="noticia-titulo">{dictionary.news.unavailable}</h1>
           <p>{article.message}</p>
         </article>
       </main>
     );
   }
 
-  return <NewsArticle article={article} />;
+  return <NewsArticle article={article} locale="en" />;
 }

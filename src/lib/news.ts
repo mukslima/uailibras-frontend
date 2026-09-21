@@ -1,4 +1,5 @@
 import { cache } from "react";
+import type { Locale } from "../i18n/dictionaries";
 
 export const NEWS_FETCH_CACHE: RequestCache = "no-store";
 
@@ -35,6 +36,7 @@ export type PublicNews = {
   tags: PublicTaxonomy[];
   featuredPosition: 1 | 2 | 3 | null;
   publishedAt?: string | null;
+  sourceSlug?: string | null;
 };
 
 type NewsApiRelation<T> = {
@@ -50,6 +52,11 @@ type PublicNewsApiItem = Omit<PublicNews, "categories" | "tags" | "featuredPosit
 
 type PublicNewsListResponse = {
   items?: PublicNewsApiItem[];
+};
+
+type PublicTranslationLinkResponse = {
+  locale: "en";
+  slug: string;
 };
 
 type NextFetchRequestInit = RequestInit & {
@@ -97,6 +104,7 @@ function mapNewsItem(item: PublicNewsApiItem): PublicNews {
     tags: (item.tags ?? []).map((relation) => relation.tag).filter(Boolean) as PublicTaxonomy[],
     featuredPosition: isFeaturedPosition(item.featuredPosition) ? item.featuredPosition : null,
     publishedAt: item.publishedAt ?? null,
+    sourceSlug: item.sourceSlug ?? null,
   };
 }
 
@@ -116,6 +124,10 @@ export function partitionFeaturedNews(news: PublicNews[]): FeaturedNewsSlots {
 }
 
 export async function fetchPublicNews(pageSize = 20): Promise<PublicNews[]> {
+  return fetchPublicNewsForLocale("pt-BR", pageSize);
+}
+
+export async function fetchPublicNewsForLocale(locale: Locale, pageSize = 20): Promise<PublicNews[]> {
   const params = new URLSearchParams({
     page: "1",
     pageSize: String(pageSize),
@@ -123,10 +135,11 @@ export async function fetchPublicNews(pageSize = 20): Promise<PublicNews[]> {
   const fetchOptions: NextFetchRequestInit = {
     cache: NEWS_FETCH_CACHE,
   };
-  const response = await fetch(`${getApiBaseUrl()}/api/v1/news?${params.toString()}`, fetchOptions);
+  const path = locale === "en" ? "/api/v1/news/i18n/en" : "/api/v1/news";
+  const response = await fetch(`${getApiBaseUrl()}${path}?${params.toString()}`, fetchOptions);
 
   if (!response.ok) {
-    throw new NewsApiError("Nao foi possivel carregar as noticias.", response.status);
+    throw new NewsApiError(locale === "en" ? "Could not load the news." : "Nao foi possivel carregar as noticias.", response.status);
   }
 
   const data = (await response.json()) as PublicNewsListResponse;
@@ -135,26 +148,45 @@ export async function fetchPublicNews(pageSize = 20): Promise<PublicNews[]> {
 
 export const fetchPublicNewsBySlug = cache(async function fetchPublicNewsBySlug(
   slug: string,
+  locale: Locale = "pt-BR",
 ): Promise<PublicNews | null> {
   const fetchOptions: NextFetchRequestInit = {
     cache: NEWS_FETCH_CACHE,
   };
-  const response = await fetch(`${getApiBaseUrl()}/api/v1/news/${encodeURIComponent(slug)}`, fetchOptions);
+  const path = locale === "en" ? `/api/v1/news/i18n/en/${encodeURIComponent(slug)}` : `/api/v1/news/${encodeURIComponent(slug)}`;
+  const response = await fetch(`${getApiBaseUrl()}${path}`, fetchOptions);
 
   if (response.status === 404) {
     return null;
   }
 
   if (!response.ok) {
-    throw new NewsApiError("Nao foi possivel carregar a noticia.", response.status);
+    throw new NewsApiError(locale === "en" ? "Could not load the news article." : "Nao foi possivel carregar a noticia.", response.status);
   }
 
   return mapNewsItem((await response.json()) as PublicNewsApiItem);
 });
 
-export async function getNewsListState(pageSize = 20): Promise<NewsListState> {
+export const fetchPublicTranslationLink = cache(async function fetchPublicTranslationLink(
+  slug: string,
+  locale: "en",
+): Promise<PublicTranslationLinkResponse | null> {
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/news/${encodeURIComponent(slug)}/i18n/${locale}/link`, {
+    cache: NEWS_FETCH_CACHE,
+  });
+
+  if (response.status === 404) return null;
+
+  if (!response.ok) {
+    throw new NewsApiError("Nao foi possivel carregar a traducao da noticia.", response.status);
+  }
+
+  return (await response.json()) as PublicTranslationLinkResponse;
+});
+
+export async function getNewsListState(pageSize = 20, locale: Locale = "pt-BR"): Promise<NewsListState> {
   try {
-    const news = await fetchPublicNews(pageSize);
+    const news = await fetchPublicNewsForLocale(locale, pageSize);
     return {
       status: "ok",
       news,
@@ -165,18 +197,18 @@ export async function getNewsListState(pageSize = 20): Promise<NewsListState> {
       status: "error",
       news: [],
       featured: partitionFeaturedNews([]),
-      message: error instanceof Error ? error.message : "Nao foi possivel carregar as noticias.",
+      message: error instanceof Error ? error.message : locale === "en" ? "Could not load the news." : "Nao foi possivel carregar as noticias.",
     };
   }
 }
 
-export function formatPublishedDate(value?: string | null) {
+export function formatPublishedDate(value?: string | null, locale: Locale = "pt-BR") {
   if (!value) return null;
 
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return null;
 
-  return new Intl.DateTimeFormat("pt-BR", {
+  return new Intl.DateTimeFormat(locale === "en" ? "en-US" : "pt-BR", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
@@ -263,8 +295,8 @@ export function sanitizePublicRichText(content: string) {
   });
 }
 
-export function getNewsUrl(news: Pick<PublicNews, "slug">) {
-  return `/noticia/${news.slug}`;
+export function getNewsUrl(news: Pick<PublicNews, "slug">, locale: Locale = "pt-BR") {
+  return locale === "en" ? `/en/news/${news.slug}` : `/noticia/${news.slug}`;
 }
 
 export function getNewsImageAlt(news: Pick<PublicNews, "title" | "coverImage">) {

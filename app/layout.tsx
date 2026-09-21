@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import Script from "next/script";
-import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { getDictionary, type Locale } from "@/i18n/dictionaries";
 import { getConfiguredSiteUrl } from "@/lib/site-url";
 import "@/styles/globals.css";
 
@@ -14,12 +16,12 @@ export const metadata: Metadata = {
     template: "%s",
   },
   description:
-    "Aprenda Libras do básico ao avançado com a UaiLibras. Cursos online, inclusão e acessibilidade para pessoas surdas.",
-  keywords: ["libras", "acessibilidade", "surdos", "cursos de libras", "inclusão"],
+    "Aprenda Libras do basico ao avancado com a UaiLibras. Cursos online, inclusao e acessibilidade para pessoas surdas.",
+  keywords: ["libras", "acessibilidade", "surdos", "cursos de libras", "inclusao"],
   authors: [{ name: "Marcos Lima" }],
   openGraph: {
     title: "Curso de Libras - UaiLibras",
-    description: "Aprenda Libras do básico ao avançado com inclusão e acessibilidade.",
+    description: "Aprenda Libras do basico ao avancado com inclusao e acessibilidade.",
     images: siteUrl ? ["/assets/imgs/06.png"] : undefined,
     type: "website",
   },
@@ -28,13 +30,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const requestHeaders = await headers();
+  const locale = (requestHeaders.get("x-uailibras-locale") === "en" ? "en" : "pt-BR") satisfies Locale;
+  const dictionary = getDictionary(locale);
+
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
+    <html lang={dictionary.htmlLang} suppressHydrationWarning>
       <head>
         <Script id="theme-init" strategy="beforeInteractive">
           {`
@@ -62,7 +68,7 @@ export default function RootLayout({
       </head>
       <body>
         <a href="#conteudo" className="skip-link">
-          Ir para o conteúdo
+          {dictionary.skip}
         </a>
         <Header />
         <div id="conteudo" tabIndex={-1}>

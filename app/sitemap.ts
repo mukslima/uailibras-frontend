@@ -1,7 +1,20 @@
 import type { MetadataRoute } from "next";
 import { getConfiguredSiteUrl } from "@/lib/site-url";
 
-const routes = ["", "/quem-somos", "/cursos", "/noticia", "/duvidas", "/contato"];
+const routes = [
+  "",
+  "/quem-somos",
+  "/cursos",
+  "/noticia",
+  "/duvidas",
+  "/contato",
+  "/en",
+  "/en/about",
+  "/en/courses",
+  "/en/news",
+  "/en/faq",
+  "/en/contact",
+];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = getConfiguredSiteUrl();

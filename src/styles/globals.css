@@ -252,6 +252,63 @@ header {
   color: var(--color-link);
 }
 
+.language-switcher {
+  margin-left: 1rem;
+  position: relative;
+}
+
+.language-button {
+  align-items: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  color: var(--color-text-strong);
+  cursor: pointer;
+  display: inline-flex;
+  font-weight: bold;
+  gap: 0.35rem;
+  min-height: 44px;
+  padding: 0 0.8rem;
+}
+
+.language-button:hover {
+  background: var(--color-surface-secondary);
+  border-color: var(--color-primary);
+  color: var(--color-link);
+}
+
+.language-menu {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-panel);
+  min-width: 150px;
+  padding: 0.4rem;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  z-index: 1200;
+}
+
+.language-menu button {
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  color: var(--color-text-strong);
+  cursor: pointer;
+  display: block;
+  font: inherit;
+  padding: 0.65rem 0.75rem;
+  text-align: left;
+  width: 100%;
+}
+
+.language-menu button:hover,
+.language-menu button:focus-visible {
+  background: var(--color-surface-secondary);
+  color: var(--color-link);
+}
+
 @media (max-width: 768px) {
   header {
     height: 92px;
@@ -295,6 +352,14 @@ header {
 
   .theme-toggle {
     margin-left: 0.75rem;
+  }
+
+  .language-switcher {
+    margin-left: 0.75rem;
+  }
+
+  .language-menu {
+    right: -3.5rem;
   }
 }
 

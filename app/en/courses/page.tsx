@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import { CoursesContent } from "@/components/pages/CoursesContent";
 import { getDictionary } from "@/i18n/dictionaries";
 
-const dictionary = getDictionary("pt-BR");
+const dictionary = getDictionary("en");
 
 export const metadata: Metadata = {
   title: dictionary.coursesPage.metadataTitle,
   description: dictionary.coursesPage.metadataDescription,
 };
 
-export default function CursosPage() {
-  return <CoursesContent />;
+export default function EnglishCoursesPage() {
+  return <CoursesContent locale="en" />;
 }
