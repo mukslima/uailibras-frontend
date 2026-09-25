@@ -148,19 +148,45 @@ header {
 
 .site-loading {
   align-items: center;
-  color: var(--color-primary);
+  background: var(--color-background);
+  color: var(--color-text);
   display: flex;
-  font-weight: bold;
   justify-content: center;
   min-height: calc(100vh - 120px);
   padding-top: 120px;
 }
 
-.site-loading span {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  padding: 0.8rem 1rem;
+.debug-loader-surface {
+  align-items: center;
+  background: var(--color-background);
+  color: var(--color-text);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  position: fixed;
+  z-index: 3000;
+}
+
+.uailibras-loader {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  display: flex;
+  height: clamp(96px, 18vw, 148px);
+  justify-content: center;
+  padding: 0;
+  width: clamp(96px, 18vw, 148px);
+}
+
+.uailibras-loader-animation,
+.uailibras-loader-static {
+  display: block;
+  height: auto;
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  width: auto;
 }
 
 .container {
@@ -188,6 +214,54 @@ header {
   height: 220px;
   max-width: 100%;
   margin-top: 60px;
+}
+
+.logo a {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.logo a > span {
+  display: block;
+  height: 100%;
+  position: relative;
+  width: 100%;
+}
+
+.logo .logo-image {
+  display: block;
+  left: 50%;
+  margin-top: 0;
+  max-width: none;
+  object-fit: contain;
+  position: absolute;
+  top: 50%;
+}
+
+.logo .logo-image-light {
+  height: 220px;
+  transform: translate(-50%, calc(-50% + 30px));
+  width: 220px;
+}
+
+.logo .logo-image-dark {
+  height: auto;
+  max-height: 118px;
+  transform: translate(-50%, calc(-50% + 26px));
+  width: 190px;
+}
+
+.logo .logo-image-dark {
+  display: none;
+}
+
+html[data-theme="dark"] .logo .logo-image-light {
+  display: none;
+}
+
+html[data-theme="dark"] .logo .logo-image-dark {
+  display: block;
 }
 
 .menu {
@@ -328,6 +402,18 @@ header {
     height: 104px;
     margin-top: 18px;
     width: auto;
+  }
+
+  .logo .logo-image-light {
+    height: 104px;
+    transform: translate(-50%, calc(-50% + 9px));
+    width: 104px;
+  }
+
+  .logo .logo-image-dark {
+    max-height: 54px;
+    transform: translate(-50%, calc(-50% + 10px));
+    width: 86px;
   }
 
   .menu ul {

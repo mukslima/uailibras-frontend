@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import Script from "next/script";
+import { DebugLoaderPreview } from "@/components/DebugLoaderPreview";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { getDictionary, type Locale } from "@/i18n/dictionaries";
@@ -70,6 +71,7 @@ export default async function RootLayout({
         <a href="#conteudo" className="skip-link">
           {dictionary.skip}
         </a>
+        <DebugLoaderPreview />
         <Header />
         <div id="conteudo" tabIndex={-1}>
           {children}

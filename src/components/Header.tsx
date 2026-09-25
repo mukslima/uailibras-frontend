@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { asset } from "@/data/site";
+import { ThemedLogo } from "@/components/ThemedLogo";
 import { getDictionary, getLocaleFromPath, type Locale } from "@/i18n/dictionaries";
 
 export function Header() {
@@ -123,7 +122,7 @@ export function Header() {
       <div className="container">
         <div className="logo">
           <Link href={locale === "en" ? "/en" : "/"} aria-label={locale === "en" ? "UaiLibras home page" : "Pagina inicial UaiLibras"}>
-            <Image src={asset("06.png")} alt="Logo UaiLibras" width={250} height={220} priority />
+            <ThemedLogo />
           </Link>
         </div>
         <nav className="menu" aria-label={locale === "en" ? "Main menu" : "Menu principal"}>
